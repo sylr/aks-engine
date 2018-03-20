@@ -5,16 +5,16 @@
     "{{.Name}}Count": "[parameters('{{.Name}}Count')]",
 {{if .IsAvailabilitySets}}
     "{{.Name}}Offset": "[parameters('{{.Name}}Offset')]",
-    "{{.Name}}AvailabilitySet": "[concat('{{.Name}}-availabilitySet-', variables('nameSuffix'))]",
+    "{{.Name}}AvailabilitySet": "[concat(variables('clusterName'), '-{{.Name}}-availabilityset')]",
 {{end}}
 {{if .IsWindows}}
     "winResourceNamePrefix" : "[substring(variables('nameSuffix'), 0, 5)]",
-    "{{.Name}}VMNamePrefix": "[concat(variables('winResourceNamePrefix'), variables('orchestratorName'), add(900,variables('{{.Name}}Index')))]",
+    "{{.Name}}VMNamePrefix": "[concat(variables('winResourceNamePrefix'), variables('clusterName'), add(900,variables('{{.Name}}Index')))]",
 {{else}}
 {{if .IsAvailabilitySets}}
-    "{{.Name}}VMNamePrefix": "[concat(variables('orchestratorName'), '-{{.Name}}-', variables('nameSuffix'), '-')]",
+    "{{.Name}}VMNamePrefix": "[concat(variables('clusterName'), '-{{.Name}}-')]",
 {{else}}
-    "{{.Name}}VMNamePrefix": "[concat(variables('orchestratorName'), '-{{.Name}}-', variables('nameSuffix'), '-vmss')]",
+    "{{.Name}}VMNamePrefix": "[concat(variables('clusterName'), '-{{.Name}}-vmss')]",
     {{if .IsLowPriorityScaleSet}}
     "{{.Name}}ScaleSetPriority": "[parameters('{{.Name}}ScaleSetPriority')]",
     "{{.Name}}ScaleSetEvictionPolicy": "[parameters('{{.Name}}ScaleSetEvictionPolicy')]",

@@ -46,6 +46,7 @@ type ContainerService struct {
 
 // Properties represents the ACS cluster definition
 type Properties struct {
+	Name                    string                   `json:"clusterName,omitempty"`
 	ProvisioningState       ProvisioningState        `json:"provisioningState,omitempty"`
 	OrchestratorProfile     *OrchestratorProfile     `json:"orchestratorProfile,omitempty"`
 	MasterProfile           *MasterProfile           `json:"masterProfile,omitempty"`

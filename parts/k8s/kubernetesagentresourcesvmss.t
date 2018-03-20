@@ -91,7 +91,7 @@
         },
         "osProfile": {
           "adminUsername": "[variables('username')]",
-          "computerNamePrefix": "[variables('{{.Name}}VMNamePrefix')]",
+          "computerNamePrefix": "[concat(variables('{{.Name}}VMNamePrefix'), '-')]",
           {{GetKubernetesAgentCustomData .}}
           "linuxConfiguration": {
               "disablePasswordAuthentication": "true",
