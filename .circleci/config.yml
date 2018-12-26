@@ -64,6 +64,8 @@ jobs:
           no_output_timeout: "30m"
       - store_artifacts:
           path: /go/src/github.com/Azure/aks-engine/_logs
+      - store_artifacts:
+          path: /go/src/github.com/Azure/aks-engine/_output
   k8s-1.10-release-e2e:
     <<: *defaults
     steps:
@@ -94,6 +96,8 @@ jobs:
           no_output_timeout: "30m"
       - store_artifacts:
           path: /go/src/github.com/Azure/aks-engine/_logs
+      - store_artifacts:
+          path: /go/src/github.com/Azure/aks-engine/_output
   k8s-1.11-release-e2e:
     <<: *defaults
     steps:
@@ -124,6 +128,8 @@ jobs:
           no_output_timeout: "30m"
       - store_artifacts:
           path: /go/src/github.com/Azure/aks-engine/_logs
+      - store_artifacts:
+          path: /go/src/github.com/Azure/aks-engine/_output
   k8s-1.12-release-e2e:
     <<: *defaults
     steps:
@@ -154,6 +160,8 @@ jobs:
           no_output_timeout: "30m"
       - store_artifacts:
           path: /go/src/github.com/Azure/aks-engine/_logs
+      - store_artifacts:
+          path: /go/src/github.com/Azure/aks-engine/_output
   k8s-1.13-release-e2e:
     <<: *defaults
     steps:
@@ -184,6 +192,8 @@ jobs:
           no_output_timeout: "30m"
       - store_artifacts:
           path: /go/src/github.com/Azure/aks-engine/_logs
+      - store_artifacts:
+          path: /go/src/github.com/Azure/aks-engine/_output
   k8s-windows-1.10-release-e2e:
     <<: *defaults
     steps:
@@ -211,6 +221,8 @@ jobs:
           no_output_timeout: "30m"
       - store_artifacts:
           path: /go/src/github.com/Azure/aks-engine/_logs
+      - store_artifacts:
+          path: /go/src/github.com/Azure/aks-engine/_output
   k8s-windows-1.11-release-e2e:
     <<: *defaults
     steps:
@@ -238,6 +250,8 @@ jobs:
           no_output_timeout: "30m"
       - store_artifacts:
           path: /go/src/github.com/Azure/aks-engine/_logs
+      - store_artifacts:
+          path: /go/src/github.com/Azure/aks-engine/_output
   k8s-windows-1.12-release-e2e:
     <<: *defaults
     steps:
@@ -265,6 +279,8 @@ jobs:
           no_output_timeout: "30m"
       - store_artifacts:
           path: /go/src/github.com/Azure/aks-engine/_logs
+      - store_artifacts:
+          path: /go/src/github.com/Azure/aks-engine/_output
   k8s-windows-1.13-release-e2e:
     <<: *defaults
     steps:
@@ -292,6 +308,8 @@ jobs:
           no_output_timeout: "30m"
       - store_artifacts:
           path: /go/src/github.com/Azure/aks-engine/_logs
+      - store_artifacts:
+          path: /go/src/github.com/Azure/aks-engine/_output
 workflows:
   version: 2
   build_and_test_pr:
