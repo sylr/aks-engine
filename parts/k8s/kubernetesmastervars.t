@@ -204,7 +204,7 @@
     "primaryAvailabilitySetName": "",
     "vmType": "vmss",
 {{else}}
-    "primaryAvailabilitySetName": "[concat('{{ (index .AgentPoolProfiles 0).Name }}-availabilitySet-',parameters('nameSuffix'))]",
+    "primaryAvailabilitySetName": "[concat('{{GetClusterName}}', '-{{ (index .AgentPoolProfiles 0).Name }}-availabilityset')]",
     "primaryScaleSetName": "",
     "vmType": "standard",
 {{end}}
