@@ -17,7 +17,7 @@ import (
 
 const (
 	// TODO: merge with the RP code
-	k8sLinuxVMNamingFormat         = "^[0-9a-zA-Z]{3}-([0-9a-fA-F]{8})-(.+)-([0-9]+)$"
+	k8sLinuxVMNamingFormat         = "^(.+)-([^-]+)-([0-9]+)$"
 	k8sLinuxVMAgentPoolNameIndex   = 2
 	k8sLinuxVMAgentClusterIDIndex  = 1
 	k8sLinuxVMAgentIndexArrayIndex = 3
@@ -25,7 +25,7 @@ const (
 	// here there are 2 capture groups
 	//  the first is the agent pool name, which can contain -s
 	//  the second group is the Cluster ID for the cluster
-	vmssNamingFormat       = "^[0-9a-zA-Z]+-([0-9a-fA-F]{8})-(.+)-vmss$"
+	vmssNamingFormat       = "^([0-9a-fA-F]{8})-([^-]+)-vmss$"
 	vmssAgentPoolNameIndex = 2
 	vmssClusterIDIndex     = 1
 

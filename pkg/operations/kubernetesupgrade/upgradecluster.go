@@ -71,7 +71,7 @@ type UpgradeCluster struct {
 }
 
 // MasterVMNamePrefix is the prefix for all master VM names for Kubernetes clusters
-const MasterVMNamePrefix = "k8s-master-"
+const MasterVMNamePrefix = "%s-master-"
 
 // MasterPoolName pool name
 const MasterPoolName = "master"
@@ -210,8 +210,14 @@ func (uc *UpgradeCluster) getClusterNodeStatus(subscriptionID uuid.UUID, az armh
 				continue
 			}
 
+			masterVMNamePrefix := fmt.Sprintf(MasterVMNamePrefix, uc.ClusterTopology.DataModel.Properties.ClusterName)
+
 			if vmOrchestratorTypeAndVersion != targetOrchestratorTypeVersion {
-				if strings.Contains(*(vm.Name), MasterVMNamePrefix) {
+				uc.Logger.Infof("PWET 2: %v", *(vm.Name))
+				uc.Logger.Infof("PWET 2: %v", masterVMNamePrefix)
+				if strings.Contains(*(vm.Name), masterVMNamePrefix) {
+					uc.Logger.Infof("PWET 3: %v", *(vm.Name))
+					uc.Logger.Infof("PWET 3: %v", uc.NameSuffix)
 					if !strings.Contains(*(vm.Name), uc.NameSuffix) {
 						uc.Logger.Infof("Skipping VM: %s for upgrade as it does not belong to cluster with expected name suffix: %s\n",
 							*vm.Name, uc.NameSuffix)
@@ -366,7 +372,7 @@ func (uc *UpgradeCluster) addVMToAgentPool(vm compute.VirtualMachine, isUpgradab
 			return err
 		}
 
-		if !strings.EqualFold(uc.NameSuffix, poolPrefix) {
+		if !strings.EqualFold(uc.NameSuffix, poolPrefix) && !strings.EqualFold(uc.DataModel.Properties.ClusterName, poolPrefix) {
 			uc.Logger.Infof("Skipping VM: %s for upgrade as it does not belong to cluster with expected name suffix: %s\n",
 				*vm.Name, uc.NameSuffix)
 			return nil

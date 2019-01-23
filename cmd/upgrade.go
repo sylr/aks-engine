@@ -204,7 +204,7 @@ func (uc *upgradeCmd) loadCluster(cmd *cobra.Command) error {
 
 	const (
 		parametersKey   = "parameters"
-		nameSuffixKey   = "nameSuffix"
+		nameSuffixKey   = "clusterName"
 		defaultValueKey = "defaultValue"
 	)
 
