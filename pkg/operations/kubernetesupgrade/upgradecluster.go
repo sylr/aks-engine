@@ -263,7 +263,7 @@ func (uc *UpgradeCluster) upgradable(currentVersion string) error {
 }
 
 func (uc *UpgradeCluster) addVMToAgentPool(vmPoolName string, vm compute.VirtualMachine, isUpgradableVM bool) error {
-	if len(vmPoolName) > 0 {
+	if len(vmPoolName) == 0 {
 		return errors.Errorf("vmPoolName should not be empty.")
 	}
 

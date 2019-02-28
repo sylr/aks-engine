@@ -30,7 +30,7 @@ var _ = Describe("Upgrade Kubernetes cluster tests", func() {
 		os.RemoveAll("_output")
 	})
 
-	It("Should succeed when cluster VMs are missing expected tags during upgrade operation", func() {
+	It("Should success when cluster VMs are missing expected tags during upgrade operation", func() {
 		cs := api.CreateMockContainerService("testcluster", "1.7.16", 1, 1, false)
 		uc := UpgradeCluster{
 			Translator: &i18n.Translator{},
@@ -51,7 +51,7 @@ var _ = Describe("Upgrade Kubernetes cluster tests", func() {
 
 		err := uc.UpgradeCluster(&mockClient, "kubeConfig", TestAKSEngineVersion)
 		Expect(err).To(BeNil())
-		Expect(uc.ClusterTopology.AgentPools).NotTo(BeEmpty())
+		Expect(uc.ClusterTopology.AgentPools).To(BeEmpty())
 
 		// Clean up
 		os.RemoveAll("./translations")
