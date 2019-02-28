@@ -178,7 +178,7 @@ func (uc *UpgradeCluster) getClusterNodeStatus(az armhelpers.AKSEngineClient, re
 			// Skip the VM upgrade validation for managed clusters as it only applies to aks-engine version support.
 			if !uc.DataModel.Properties.IsHostedMasterProfile() {
 				if err := uc.upgradable(currentVersion); err != nil {
-					continue
+					return err
 				}
 			}
 
