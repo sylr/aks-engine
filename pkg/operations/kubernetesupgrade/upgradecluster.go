@@ -170,7 +170,7 @@ func (uc *UpgradeCluster) getClusterNodeStatus(az armhelpers.AKSEngineClient, re
 			if resourceNameSuffix, ok := vm.Tags["resourceNameSuffix"]; !ok {
 				uc.Logger.Infof("Skipping VM: %s for upgrade as the VM Tag resourceNameSuffix has not been found.", *vm.Name)
 				continue
-			} else if *resourceNameSuffix == uc.NameSuffix {
+			} else if *resourceNameSuffix != uc.NameSuffix {
 				uc.Logger.Infof("Skipping VM: %s for upgrade as the VM Tag resourceNameSuffix '%s' is not '%s'.", *vm.Name, *resourceNameSuffix, uc.NameSuffix)
 				continue
 			}
