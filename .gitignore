@@ -15,6 +15,8 @@ bin/
 .coverprofile
 coverage.txt
 
+pkg/engine/templates_generated.go
+
 test/junit/
 test/aks-engine-test/aks-engine-test.exe
 pkg/operations/junit.xml
