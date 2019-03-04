@@ -15,7 +15,7 @@ spec:
         tier: node
     spec:
       tolerations:
-      - operator: Equal
+      - operator: Exists
         effect: NoSchedule
       containers:
       - command:
