@@ -116,14 +116,17 @@ func (uc *UpgradeCluster) getClusterNodeStatus(az armhelpers.AKSEngineClient, re
 			return err
 		}
 		for _, vmScaleSet := range vmScaleSetPage.Values() {
+			uc.Logger.Infof("VMSS: %v", *vmScaleSet.Name)
+
+			scaleSetToUpgrade := AgentPoolScaleSet{
+				Name:     *vmScaleSet.Name,
+				Sku:      *vmScaleSet.Sku,
+				Location: *vmScaleSet.Location,
+			}
+
 			for vmScaleSetVMsPage, err := uc.Client.ListVirtualMachineScaleSetVMs(ctx, resourceGroup, *vmScaleSet.Name); vmScaleSetVMsPage.NotDone(); err = vmScaleSetVMsPage.Next() {
 				if err != nil {
 					return err
-				}
-				scaleSetToUpgrade := AgentPoolScaleSet{
-					Name:     *vmScaleSet.Name,
-					Sku:      *vmScaleSet.Sku,
-					Location: *vmScaleSet.Location,
 				}
 				for _, vm := range vmScaleSetVMsPage.Values() {
 					currentVersion := uc.getNodeVersion(kubeClient, *vm.Name, vm.Tags)
@@ -149,8 +152,9 @@ func (uc *UpgradeCluster) getClusterNodeStatus(az armhelpers.AKSEngineClient, re
 						)
 					}
 				}
-				uc.AgentPoolScaleSetsToUpgrade = append(uc.AgentPoolScaleSetsToUpgrade, scaleSetToUpgrade)
 			}
+
+			uc.AgentPoolScaleSetsToUpgrade = append(uc.AgentPoolScaleSetsToUpgrade, scaleSetToUpgrade)
 		}
 	}
 
