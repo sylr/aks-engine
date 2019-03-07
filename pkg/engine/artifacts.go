@@ -194,12 +194,6 @@ func kubernetesAddonSettingsInit(profile *api.Properties) []kubernetesFeatureSet
 			profile.OrchestratorProfile.KubernetesConfig.GetAddonScript(DefaultAzureCloudProviderDeploymentAddonName),
 		},
 		{
-			"kubernetesmaster-audit-policy.yaml",
-			"audit-policy.yaml",
-			common.IsKubernetesVersionGe(profile.OrchestratorProfile.OrchestratorVersion, "1.8.0"),
-			profile.OrchestratorProfile.KubernetesConfig.GetAddonScript(DefaultAuditPolicyAddonName),
-		},
-		{
 			"kubernetesmasteraddons-elb-svc.yaml",
 			"elb-svc.yaml",
 			profile.OrchestratorProfile.KubernetesConfig.LoadBalancerSku == "Standard",
@@ -244,6 +238,12 @@ func kubernetesManifestSettingsInit(profile *api.Properties) []kubernetesFeature
 			"kubernetesmaster-kube-addon-manager.yaml",
 			"kube-addon-manager.yaml",
 			true,
+			"",
+		},
+		{
+			"kubernetesmaster-audit-policy.yaml",
+			"audit-policy.yaml",
+			common.IsKubernetesVersionGe(profile.OrchestratorProfile.OrchestratorVersion, "1.8.0"),
 			"",
 		},
 	}
