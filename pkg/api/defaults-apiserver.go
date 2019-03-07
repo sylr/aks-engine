@@ -88,7 +88,7 @@ func (cs *ContainerService) setAPIServerConfig() {
 
 	// Audit Policy configuration
 	if common.IsKubernetesVersionGe(o.OrchestratorVersion, "1.8.0") {
-		defaultAPIServerConfig["--audit-policy-file"] = "/etc/kubernetes/addons/audit-policy.yaml"
+		defaultAPIServerConfig["--audit-policy-file"] = "/etc/kubernetes/manifests/audit-policy.yaml"
 	}
 
 	// RBAC configuration
