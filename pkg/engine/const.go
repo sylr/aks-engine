@@ -49,8 +49,6 @@ const (
 	DefaultAzureCloudProviderDeploymentAddonName = "azure-cloud-provider-deployment"
 	// DefaultAzureCNINetworkMonitorAddonName is the name of the azure cni network monitor addon
 	DefaultAzureCNINetworkMonitorAddonName = "azure-cni-networkmonitor"
-	// DefaultAuditPolicyAddonName is the name of the audit policy addon
-	DefaultAuditPolicyAddonName = "audit-policy"
 	// DefaultTillerAddonName is the name of the tiller addon deployment
 	DefaultTillerAddonName = "tiller"
 	// DefaultAADPodIdentityAddonName is the name of the aad-pod-identity addon deployment
