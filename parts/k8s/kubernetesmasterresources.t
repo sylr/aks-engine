@@ -264,19 +264,27 @@
               "idleTimeoutInMinutes": 5,
               "loadDistribution": "Default",
               "probe": {
-                "id": "[concat(variables('masterLbID'),'/probes/tcpHTTPSProbe')]"
+                "id": "[concat(variables('masterLbID'),'/probes/APIServerProbe')]"
               }
             }
           }
         ],
         "probes": [
           {
-            "name": "tcpHTTPSProbe",
+            "name": "APIServerProbe",
             "properties": {
+{{if eq LoadBalancerSku "Standard"}}
+              "protocol": "Https",
+              "port": 443,
+              "requestPath": "/healthz",
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+{{else}}
               "protocol": "Tcp",
               "port": 443,
               "intervalInSeconds": 5,
               "numberOfProbes": 2
+{{end}}
             }
           }
         ]
@@ -664,19 +672,27 @@
               "idleTimeoutInMinutes": 5,
               "protocol": "Tcp",
               "probe": {
-                "id": "[concat(variables('masterInternalLbID'),'/probes/tcpHTTPSProbe')]"
+                "id": "[concat(variables('masterInternalLbID'),'/probes/APIServerProbe')]"
               }
             }
           }
         ],
         "probes": [
           {
-            "name": "tcpHTTPSProbe",
+            "name": "APIServerProbe",
             "properties": {
-              "intervalInSeconds": 5,
-              "numberOfProbes": 2,
+{{if eq LoadBalancerSku "Standard"}}
+              "protocol": "Https",
               "port": 4443,
-              "protocol": "Tcp"
+              "requestPath": "/healthz",
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+{{else}}
+              "protocol": "Tcp",
+              "port": 4443,
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+{{end}}
             }
           }
         ]
