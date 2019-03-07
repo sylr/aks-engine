@@ -21,10 +21,8 @@ spec:
       tolerations:
       - key: CriticalAddonsOnly
         operator: Exists
-      - key: node-role.kubernetes.io/master
-        operator: Equal
-        value: "true"
-        effect: NoSchedule
+      - effect: NoSchedule
+        operator: Exists
       containers:
       - name: azure-ip-masq-agent
         image: {{ContainerImage "ip-masq-agent"}}
