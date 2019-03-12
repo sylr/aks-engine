@@ -273,18 +273,11 @@
           {
             "name": "APIServerProbe",
             "properties": {
-{{if eq LoadBalancerSku "Standard"}}
-              "protocol": "Https",
-              "port": 443,
+              "protocol": "Http",
+              "port": 10252,
               "requestPath": "/healthz",
               "intervalInSeconds": 5,
               "numberOfProbes": 2
-{{else}}
-              "protocol": "Tcp",
-              "port": 443,
-              "intervalInSeconds": 5,
-              "numberOfProbes": 2
-{{end}}
             }
           }
         ]
@@ -681,18 +674,11 @@
           {
             "name": "APIServerProbe",
             "properties": {
-{{if eq LoadBalancerSku "Standard"}}
-              "protocol": "Https",
-              "port": 4443,
+              "protocol": "Http",
+              "port": 10252,
               "requestPath": "/healthz",
               "intervalInSeconds": 5,
               "numberOfProbes": 2
-{{else}}
-              "protocol": "Tcp",
-              "port": 4443,
-              "intervalInSeconds": 5,
-              "numberOfProbes": 2
-{{end}}
             }
           }
         ]
