@@ -44,12 +44,6 @@ else
     FULL_INSTALL_REQUIRED=true
 fi
 
-if [[ $OS == $UBUNTU_OS_NAME ]]; then
-    holdWALinuxAgent "hold"
-fi
-
-upgradeOs
-
 if [[ ! -z "${MASTER_NODE}" ]] && [[ -z "${COSMOS_URI}" ]]; then
     	installEtcd
 fi
@@ -169,10 +163,11 @@ if $REBOOTREQUIRED; then
   echo 'reboot required, rebooting node in 1 minute'
   nohup /bin/bash -c "sleep 3 && reboot" &
   if [[ $OS == $UBUNTU_OS_NAME ]]; then
-      holdWALinuxAgent "unhold"
+      aptmarkWALinuxAgent unhold &
   fi
 else
   if [[ $OS == $UBUNTU_OS_NAME ]]; then
-      runAptDaily &
+      /usr/lib/apt/apt.systemd.daily &
+      aptmarkWALinuxAgent unhold &
   fi
 fi
