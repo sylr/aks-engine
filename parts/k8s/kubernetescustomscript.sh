@@ -36,12 +36,6 @@ if [[ $OS == $COREOS_OS_NAME ]]; then
     KUBECTL=/opt/kubectl
 fi
 
-if [ -f /var/run/reboot-required ]; then
-    REBOOTREQUIRED=true
-else
-    REBOOTREQUIRED=false
-fi
-
 if [ -f /var/log/azure/golden-image-install.complete ]; then
     echo "detected golden image pre-install"
     FULL_INSTALL_REQUIRED=false
@@ -53,6 +47,8 @@ fi
 if [[ $OS == $UBUNTU_OS_NAME ]]; then
     holdWALinuxAgent "hold"
 fi
+
+upgradeOs
 
 if [[ ! -z "${MASTER_NODE}" ]] && [[ -z "${COSMOS_URI}" ]]; then
     	installEtcd
@@ -161,6 +157,12 @@ ps auxfww > /opt/azure/provision-ps.log &
 
 if ! $FULL_INSTALL_REQUIRED; then
     cleanUpContainerImages
+fi
+
+if [ -f /var/run/reboot-required ]; then
+    REBOOTREQUIRED=true
+else
+    REBOOTREQUIRED=false
 fi
 
 if $REBOOTREQUIRED; then
