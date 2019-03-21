@@ -176,7 +176,10 @@ fi
 
 if $REBOOTREQUIRED; then
   echo 'reboot required, rebooting node in 1 minute'
-  /bin/bash -c "shutdown -r 1 &"
+  nohup /bin/bash -c "sleep 3 && reboot" &
 else
   runAptDaily &
 fi
+
+echo "Exiting ..."
+exit 0
