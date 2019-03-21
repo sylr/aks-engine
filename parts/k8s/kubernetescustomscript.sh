@@ -48,12 +48,15 @@ if [[ ! -z "${MASTER_NODE}" ]] && [[ -z "${COSMOS_URI}" ]]; then
     	installEtcd
 fi
 
+aptUpgrade
+
 if $FULL_INSTALL_REQUIRED; then
     installDeps
 else 
     echo "Golden image; skipping dependencies installation"
 fi
 
+installTools
 installContainerRuntime
 installNetworkPlugin
 if [[ "$CONTAINER_RUNTIME" == "clear-containers" ]] || [[ "$CONTAINER_RUNTIME" == "kata-containers" ]] || [[ "$CONTAINER_RUNTIME" == "containerd" ]]; then
@@ -143,6 +146,9 @@ if $FULL_INSTALL_REQUIRED; then
     fi
 fi
 
+# re-enable unattended upgrades
+rm -f /etc/apt/apt.conf.d/99periodic
+
 echo "Custom script finished successfully"
 
 echo `date`,`hostname`, endcustomscript>>/opt/m
@@ -161,13 +167,16 @@ fi
 
 if $REBOOTREQUIRED; then
   echo 'reboot required, rebooting node in 1 minute'
-  nohup /bin/bash -c "sleep 3 && reboot" &
   if [[ $OS == $UBUNTU_OS_NAME ]]; then
-      aptmarkWALinuxAgent unhold &
+      aptmarkWALinuxAgent unhold
   fi
+  nohup /bin/bash -c "sleep 3 && reboot" &
 else
   if [[ $OS == $UBUNTU_OS_NAME ]]; then
       /usr/lib/apt/apt.systemd.daily &
       aptmarkWALinuxAgent unhold &
   fi
 fi
+
+echo "Exiting ..."
+exit 0
