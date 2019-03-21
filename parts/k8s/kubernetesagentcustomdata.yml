@@ -43,6 +43,15 @@ write_files:
   content: !!binary |
     {{WrapAsVariable "healthMonitorScript"}}
 
+- path: /etc/apt/apt.conf.d/10periodic
+  permissions: "0644"
+  owner: root
+  content: |
+    APT::Periodic::Update-Package-Lists "1";
+    APT::Periodic::Download-Upgradeable-Packages "1";
+    APT::Periodic::AutocleanInterval "7";
+    APT::Periodic::Unattended-Upgrade "1";
+
 - path: /etc/systemd/system/kubelet-monitor.timer
   permissions: "0644"
   owner: root
