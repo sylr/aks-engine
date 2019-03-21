@@ -140,7 +140,7 @@ wait_for_file() {
 wait_for_apt_locks() {
     while fuser /var/lib/dpkg/lock /var/lib/apt/lists/lock /var/cache/apt/archives/lock >/dev/null 2>&1; do
         echo 'Waiting for release of apt locks'
-        sleep 3
+        sleep 1
     done
 }
 apt_get_update() {
@@ -155,25 +155,32 @@ apt_get_update() {
         cat $apt_update_output
         if [ $i -eq $retries ]; then
             return 1
-        else sleep 30
+        else
+          sleep 3
         fi
     done
     echo Executed apt-get update $i times
     wait_for_apt_locks
 }
 apt_get_dist_upgrade() {
-    retries=2
+    retries=10
     apt_dist_upgrade_output=/tmp/apt-get-dist-upgrade.out
     for i in $(seq 1 $retries); do
         wait_for_apt_locks
-        dpkg --configure -a
-        apt-get -f -y install
+        dpkg --configure -a && sleep 1
+        apt-get -f -y install && sleep 1
         apt-get dist-upgrade -y 2>&1 | tee $apt_dist_upgrade_output | grep -E "^([WE]:.*)|([eE]rr.*)$"
-        [ $? -ne 0  ] && cat $apt_dist_upgrade_output && break || \
-        cat $apt_dist_upgrade_output
+
+        if [ $? -ne 0  ]; then
+          cat $apt_dist_upgrade_output
+          break
+        else
+          cat $apt_dist_upgrade_output
+          sleep 2
+        fi
+
         if [ $i -eq $retries ]; then
             return 1
-        else sleep 30
         fi
     done
     echo Executed apt-get dist-upgrade $i times
