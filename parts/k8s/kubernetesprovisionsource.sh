@@ -162,7 +162,7 @@ apt_get_update() {
     wait_for_apt_locks
 }
 apt_get_dist_upgrade() {
-    retries=2
+    retries=10
     apt_dist_upgrade_output=/tmp/apt-get-dist-upgrade.out
     for i in $(seq 1 $retries); do
         wait_for_apt_locks
@@ -173,7 +173,8 @@ apt_get_dist_upgrade() {
         cat $apt_dist_upgrade_output
         if [ $i -eq $retries ]; then
             return 1
-        else sleep 30
+        else
+            sleep 30
         fi
     done
     echo Executed apt-get dist-upgrade $i times
