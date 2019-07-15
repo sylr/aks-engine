@@ -152,7 +152,7 @@ test-e2e:
 HAS_DEP := $(shell $(CHECK) dep)
 HAS_GOX := $(shell $(CHECK) gox)
 HAS_GIT := $(shell $(CHECK) git)
-HAS_GOLANGCI := $(shell $(CHECK) golangci-lint)
+HAS_GOLANGCI ?= $(shell $(CHECK) golangci-lint)
 HAS_GINKGO := $(shell $(CHECK) ginkgo)
 
 .PHONY: bootstrap

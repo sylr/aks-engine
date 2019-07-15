@@ -38,6 +38,8 @@ type ContainerService struct {
 
 // Properties represents the AKS cluster definition
 type Properties struct {
+	ClusterName                 string                   `json:"clusterName,omitempty"`
+	ClusterResourceNameTemplate string                   `json:"clusterResourceNameTemplate,omitempty"`
 	ProvisioningState       ProvisioningState        `json:"provisioningState,omitempty"`
 	OrchestratorProfile     *OrchestratorProfile     `json:"orchestratorProfile,omitempty" validate:"required"`
 	MasterProfile           *MasterProfile           `json:"masterProfile,omitempty" validate:"required"`

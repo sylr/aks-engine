@@ -59,15 +59,15 @@ func CreateMasterVMSS(cs *api.ContainerService) VirtualMachineScaleSetARM {
 
 	virtualMachine := compute.VirtualMachineScaleSet{
 		Location: to.StringPtr("[variables('location')]"),
-		Name:     to.StringPtr("[concat(variables('masterVMNamePrefix'), 'vmss')]"),
-		Tags: map[string]*string{
+		Name:     to.StringPtr(cs.Properties.FormatResourceName("master", "vmss", "")),
+		Tags: 	  map[string]*string{
 			"creationSource":     to.StringPtr("[concat(parameters('generatorCode'), '-', variables('masterVMNamePrefix'), 'vmss')]"),
 			"resourceNameSuffix": to.StringPtr("[parameters('nameSuffix')]"),
 			"orchestrator":       to.StringPtr("[variables('orchestratorNameVersionTag')]"),
 			"aksEngineVersion":   to.StringPtr("[parameters('aksEngineVersion')]"),
 			"poolName":           to.StringPtr("master"),
 		},
-		Type: to.StringPtr("Microsoft.Compute/virtualMachineScaleSets"),
+		Type: 	  to.StringPtr("Microsoft.Compute/virtualMachineScaleSets"),
 	}
 
 	addCustomTagsToVMScaleSets(cs.Properties.MasterProfile.CustomVMTags, &virtualMachine)
@@ -374,7 +374,7 @@ func CreateAgentVMSS(cs *api.ContainerService, profile *api.AgentPoolProfile) Vi
 	}
 
 	virtualMachineScaleSet := compute.VirtualMachineScaleSet{
-		Name:     to.StringPtr(fmt.Sprintf("[variables('%sVMNamePrefix')]", profile.Name)),
+		Name:     to.StringPtr(cs.Properties.FormatResourceName(profile.Name, "vmss", "")),
 		Type:     to.StringPtr("Microsoft.Compute/virtualMachineScaleSets"),
 		Location: to.StringPtr("[variables('location')]"),
 		Sku: &compute.Sku{

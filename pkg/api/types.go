@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"hash/fnv"
+	"html/template"
 	"math/rand"
 	"net"
 	neturl "net/url"
@@ -73,24 +74,26 @@ type AgentPoolResource struct {
 
 // Properties represents the AKS cluster definition
 type Properties struct {
-	ClusterID               string
-	ProvisioningState       ProvisioningState        `json:"provisioningState,omitempty"`
-	OrchestratorProfile     *OrchestratorProfile     `json:"orchestratorProfile,omitempty"`
-	MasterProfile           *MasterProfile           `json:"masterProfile,omitempty"`
-	AgentPoolProfiles       []*AgentPoolProfile      `json:"agentPoolProfiles,omitempty"`
-	LinuxProfile            *LinuxProfile            `json:"linuxProfile,omitempty"`
-	WindowsProfile          *WindowsProfile          `json:"windowsProfile,omitempty"`
-	ExtensionProfiles       []*ExtensionProfile      `json:"extensionProfiles"`
-	DiagnosticsProfile      *DiagnosticsProfile      `json:"diagnosticsProfile,omitempty"`
-	JumpboxProfile          *JumpboxProfile          `json:"jumpboxProfile,omitempty"`
-	ServicePrincipalProfile *ServicePrincipalProfile `json:"servicePrincipalProfile,omitempty"`
-	CertificateProfile      *CertificateProfile      `json:"certificateProfile,omitempty"`
-	AADProfile              *AADProfile              `json:"aadProfile,omitempty"`
-	CustomProfile           *CustomProfile           `json:"customProfile,omitempty"`
-	HostedMasterProfile     *HostedMasterProfile     `json:"hostedMasterProfile,omitempty"`
-	AddonProfiles           map[string]AddonProfile  `json:"addonProfiles,omitempty"`
-	FeatureFlags            *FeatureFlags            `json:"featureFlags,omitempty"`
-	CustomCloudProfile      *CustomCloudProfile      `json:"customCloudProfile,omitempty"`
+	ClusterID                   string
+	ClusterName                 string                   `json:"clusterName,omitempty"`
+	ClusterResourceNameTemplate string                   `json:"clusterResourceNameTemplate,omitempty"`
+	ProvisioningState           ProvisioningState        `json:"provisioningState,omitempty"`
+	OrchestratorProfile         *OrchestratorProfile     `json:"orchestratorProfile,omitempty"`
+	MasterProfile               *MasterProfile           `json:"masterProfile,omitempty"`
+	AgentPoolProfiles           []*AgentPoolProfile      `json:"agentPoolProfiles,omitempty"`
+	LinuxProfile                *LinuxProfile            `json:"linuxProfile,omitempty"`
+	WindowsProfile              *WindowsProfile          `json:"windowsProfile,omitempty"`
+	ExtensionProfiles           []*ExtensionProfile      `json:"extensionProfiles"`
+	DiagnosticsProfile          *DiagnosticsProfile      `json:"diagnosticsProfile,omitempty"`
+	JumpboxProfile              *JumpboxProfile          `json:"jumpboxProfile,omitempty"`
+	ServicePrincipalProfile     *ServicePrincipalProfile `json:"servicePrincipalProfile,omitempty"`
+	CertificateProfile          *CertificateProfile      `json:"certificateProfile,omitempty"`
+	AADProfile                  *AADProfile              `json:"aadProfile,omitempty"`
+	CustomProfile               *CustomProfile           `json:"customProfile,omitempty"`
+	HostedMasterProfile         *HostedMasterProfile     `json:"hostedMasterProfile,omitempty"`
+	AddonProfiles               map[string]AddonProfile  `json:"addonProfiles,omitempty"`
+	FeatureFlags                *FeatureFlags            `json:"featureFlags,omitempty"`
+	CustomCloudProfile          *CustomCloudProfile      `json:"customCloudProfile,omitempty"`
 }
 
 // ClusterMetadata represents the metadata of the AKS cluster.
@@ -853,6 +856,59 @@ func (p *Properties) GetAgentPoolIndexByName(name string) int {
 		}
 	}
 	return index
+}
+
+// GetClusterName returns resource prefix based on Properties
+func (p *Properties) GetClusterName() (ret string) {
+	if len(p.ClusterName) > 0 {
+		ret = p.ClusterName
+	} else {
+		ret = p.K8sOrchestratorName() + "-" + p.GetClusterID()
+	}
+	return
+}
+
+// FormatResourceName ...
+func (p *Properties) FormatResourceName(rpool string, rtype string, rsuffix string) (ret string) {
+	if len(p.ClusterResourceNameTemplate) == 0 {
+		p.ClusterResourceNameTemplate = `
+			{{- .Properties.K8sOrchestratorName -}}
+			{{- if .Pool }}-{{- .Pool -}}{{ end -}}
+			-{{- .Properties.GetClusterID -}}
+			{{- if .Type }}-{{- .Type -}}{{ end -}}
+			{{- if .Suffix }}-{{- .Suffix -}}{{ end -}}
+		`
+		p.ClusterResourceNameTemplate = strings.TrimSpace(p.ClusterResourceNameTemplate)
+		p.ClusterResourceNameTemplate = strings.Replace(p.ClusterResourceNameTemplate, "\t", "", -1)
+		p.ClusterResourceNameTemplate = strings.Replace(p.ClusterResourceNameTemplate, "\n", "", -1)
+	}
+
+	data := struct {
+		Properties *Properties
+		Pool       string
+		Type       string
+		Suffix     string
+	}{
+		Properties: p,
+		Pool:       rpool,
+		Type:       rtype,
+		Suffix:     rsuffix,
+	}
+
+	var result bytes.Buffer
+	tmpl, err := template.New("FormatResourceName").Parse(p.ClusterResourceNameTemplate)
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = tmpl.Execute(&result, data)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return result.String()
 }
 
 // GetAgentVMPrefix returns the VM prefix for an agentpool.
