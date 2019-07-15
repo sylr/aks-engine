@@ -103,7 +103,7 @@ func getK8sMasterVars(cs *api.ContainerService) (map[string]interface{}, error) 
 			"[parameters('location')]",
 		},
 		"location":               "[variables('locations')[mod(add(2,length(parameters('location'))),add(1,length(parameters('location'))))]]",
-		"masterAvailabilitySet":  "[concat('master-availabilityset-', parameters('nameSuffix'))]",
+		"masterAvailabilitySet":  cs.Properties.FormatResourceName("master", "availabilityset", ""),
 		"resourceGroup":          "[resourceGroup().name]",
 		"truncatedResourceGroup": "[take(replace(replace(resourceGroup().name, '(', '-'), ')', '-'), 63)]",
 		"labelResourceGroup":     "[if(or(or(endsWith(variables('truncatedResourceGroup'), '-'), endsWith(variables('truncatedResourceGroup'), '_')), endsWith(variables('truncatedResourceGroup'), '.')), concat(take(variables('truncatedResourceGroup'), 62), 'z'), variables('truncatedResourceGroup'))]",
@@ -294,11 +294,11 @@ func getK8sMasterVars(cs *api.ContainerService) (map[string]interface{}, error) 
 			masterVars["vnetID"] = "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]"
 			masterVars["virtualNetworkResourceGroupName"] = "''"
 		}
-		masterVars["routeTableName"] = "[concat(variables('masterVMNamePrefix'),'routetable')]"
+		masterVars["routeTableName"] = cs.Properties.FormatResourceName("master", "routetable", "")
 		if masterProfile.IsStorageAccount() {
 			masterVars["masterStorageAccountName"] = "[concat(variables('storageAccountBaseName'), 'mstr0')]"
 		}
-		masterVars["nsgName"] = "[concat(variables('masterVMNamePrefix'), 'nsg')]"
+		masterVars["nsgName"] = cs.Properties.FormatResourceName("master", "nsg", "")
 
 	} else {
 		if isCustomVnet {
@@ -413,7 +413,7 @@ func getK8sMasterVars(cs *api.ContainerService) (map[string]interface{}, error) 
 		masterVars["masterEtcdClientPort"] = DefaultMasterEtcdClientPort
 
 		if isMasterVMSS {
-			masterVars["masterVMNamePrefix"] = "[concat(parameters('orchestratorName'), '-master-', parameters('nameSuffix'), '-')]"
+			masterVars["masterVMNamePrefix"] = cs.Properties.GetMasterVMPrefix()
 		} else {
 			masterVars["masterVMNamePrefix"] = cs.Properties.GetMasterVMPrefix()
 			masterVars["masterVMNames"] = []string{
@@ -473,10 +473,10 @@ func getK8sMasterVars(cs *api.ContainerService) (map[string]interface{}, error) 
 	}
 
 	if cs.Properties.OrchestratorProfile.KubernetesConfig.IsAddonEnabled(AppGwIngressAddonName) {
-		masterVars["appGwName"] = "[concat(parameters('orchestratorName'), '-appgw-', parameters('nameSuffix'))]"
-		masterVars["appGwSubnetName"] = "appgw-subnet"
-		masterVars["appGwPublicIPAddressName"] = "[concat(parameters('orchestratorName'), '-appgw-ip-', parameters('nameSuffix'))]"
-		masterVars["appGwICIdentityName"] = "[concat(parameters('orchestratorName'), '-appgw-ic-identity-', parameters('nameSuffix'))]"
+		masterVars["appGwName"] = cs.Properties.FormatResourceName("", "appgw", "")
+		masterVars["appGwSubnetName"] = cs.Properties.FormatResourceName("appgw", "subnet", "")
+		masterVars["appGwPublicIPAddressName"] = cs.Properties.FormatResourceName("appgw", "ip", "")
+		masterVars["appGwICIdentityName"] = cs.Properties.FormatResourceName("appgw", "ic-identity", "")
 		masterVars["appGwId"] = "[resourceId('Microsoft.Network/applicationGateways',variables('appGwName'))]"
 		masterVars["appGwICIdentityId"] = "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('appGwICIdentityName'))]"
 	}

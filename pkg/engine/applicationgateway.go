@@ -24,7 +24,7 @@ func createApplicationGateway(prop *api.Properties) ApplicationGatewayARM {
 			Name:     to.StringPtr("[variables('appGwName')]"),
 			ApplicationGatewayPropertiesFormat: &network.ApplicationGatewayPropertiesFormat{
 				Sku: &network.ApplicationGatewaySku{
-					Name:     network.ApplicationGatewaySkuName("[parameters('appGwSku')]"),
+					Name:     network.ApplicationGatewaySkuName(prop.FormatResourceName("master", "appgw", "")),
 					Tier:     network.ApplicationGatewayTier("[parameters('appGwSku')]"),
 					Capacity: to.Int32Ptr(2),
 				},
