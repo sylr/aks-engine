@@ -132,7 +132,7 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:ffcbca380dbcb924037ff7650da308aca0458296489349b8ce849436e47f0c8a"
+  digest = "1:dbaf342fbea8bf65f353a10eacab55ec33c57708432b95e27d21f5abed75f40f"
   name = "github.com/go-bindata/go-bindata"
   packages = [
     ".",

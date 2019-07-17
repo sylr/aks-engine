@@ -351,7 +351,7 @@ func getK8sMasterVars(cs *api.ContainerService) (map[string]interface{}, error) 
 
 	if isHostedMaster {
 		masterVars["kubernetesAPIServerIP"] = "[parameters('kubernetesEndpoint')]"
-		masterVars["agentNamePrefix"] = "[concat(parameters('orchestratorName'), '-agentpool-', parameters('nameSuffix'), '-')]"
+		masterVars["agentNamePrefix"] = cs.Properties.FormatResourceName("agentpool", "", "") + "-"
 	} else {
 		if cs.Properties.OrchestratorProfile.IsPrivateCluster() {
 			masterVars["kubeconfigServer"] = "[concat('https://', variables('kubernetesAPIServerIP'), ':443')]"
@@ -380,18 +380,18 @@ func getK8sMasterVars(cs *api.ContainerService) (map[string]interface{}, error) 
 
 			}
 		} else {
-			masterVars["masterPublicIPAddressName"] = "[concat(parameters('orchestratorName'), '-master-ip-', variables('masterFqdnPrefix'), '-', parameters('nameSuffix'))]"
+			masterVars["masterPublicIPAddressName"] = cs.Properties.FormatResourceName("master", "ip", "")
 			masterVars["masterLbID"] = "[resourceId('Microsoft.Network/loadBalancers',variables('masterLbName'))]"
 			masterVars["masterLbIPConfigID"] = "[concat(variables('masterLbID'),'/frontendIPConfigurations/', variables('masterLbIPConfigName'))]"
-			masterVars["masterLbIPConfigName"] = "[concat(parameters('orchestratorName'), '-master-lbFrontEnd-', parameters('nameSuffix'))]"
-			masterVars["masterLbName"] = "[concat(parameters('orchestratorName'), '-master-lb-', parameters('nameSuffix'))]"
+			masterVars["masterLbIPConfigName"] = cs.Properties.FormatResourceName("master", "lb", "frontend")
+			masterVars["masterLbName"] = cs.Properties.FormatResourceName("master", "lb", "")
 			masterVars["kubeconfigServer"] = "[concat('https://', variables('masterFqdnPrefix'), '.', variables('location'), '.', parameters('fqdnEndpointSuffix'))]"
 		}
 
 		if masterProfile.HasMultipleNodes() {
-			masterVars["masterInternalLbName"] = "[concat(parameters('orchestratorName'), '-master-internal-lb-', parameters('nameSuffix'))]"
+			masterVars["masterInternalLbName"] = cs.Properties.FormatResourceName("master", "lb", "internal")
 			masterVars["masterInternalLbID"] = "[resourceId('Microsoft.Network/loadBalancers',variables('masterInternalLbName'))]"
-			masterVars["masterInternalLbIPConfigName"] = "[concat(parameters('orchestratorName'), '-master-internal-lbFrontEnd-', parameters('nameSuffix'))]"
+			masterVars["masterInternalLbIPConfigName"] = cs.Properties.FormatResourceName("master", "lb", "internal-frontend")
 			masterVars["masterInternalLbIPConfigID"] = "[concat(variables('masterInternalLbID'),'/frontendIPConfigurations/', variables('masterInternalLbIPConfigName'))]"
 			masterVars["masterInternalLbIPOffset"] = DefaultInternalLbStaticIPOffset
 			if isMasterVMSS {
@@ -404,7 +404,7 @@ func getK8sMasterVars(cs *api.ContainerService) (map[string]interface{}, error) 
 			masterVars["kubernetesAPIServerIP"] = "[parameters('firstConsecutiveStaticIP')]"
 		}
 
-		masterVars["masterLbBackendPoolName"] = "[concat(parameters('orchestratorName'), '-master-pool-', parameters('nameSuffix'))]"
+		masterVars["masterLbBackendPoolName"] = cs.Properties.FormatResourceName("master", "lb", "backendpool")
 		masterVars["masterFirstAddrComment"] = "these MasterFirstAddrComment are used to place multiple masters consecutively in the address space"
 		masterVars["masterFirstAddrOctets"] = "[split(parameters('firstConsecutiveStaticIP'),'.')]"
 		masterVars["masterFirstAddrOctet4"] = "[variables('masterFirstAddrOctets')[3]]"
