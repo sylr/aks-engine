@@ -538,6 +538,7 @@ func getDataDisks(a *api.AgentPoolProfile) string {
               "diskSizeGB": "%d",
               "lun": %d,
               "caching": "ReadOnly",
+              "name": "[concat(variables('%sVMNamePrefix'), copyIndex(),'-datadisk%d')]",
               "createOption": "Empty"
             }`
 	for i, diskSize := range a.DiskSizesGB {

@@ -183,10 +183,10 @@ func CreateMasterVM(cs *api.ContainerService) VirtualMachineARM {
 	osDisk := &compute.OSDisk{
 		Caching:      compute.CachingTypesReadWrite,
 		CreateOption: compute.DiskCreateOptionTypesFromImage,
+		Name:         to.StringPtr("[concat(variables('masterVMNamePrefix'), copyIndex(variables('masterOffset')),'-osdisk')]"),
 	}
 
 	if isStorageAccount {
-		osDisk.Name = to.StringPtr("[concat(variables('masterVMNamePrefix'), copyIndex(variables('masterOffset')),'-osdisk')]")
 		osDisk.Vhd = &compute.VirtualHardDisk{
 			URI: to.StringPtr("[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('masterStorageAccountName')),variables('apiVersionStorage')).primaryEndpoints.blob,'vhds/',variables('masterVMNamePrefix'),copyIndex(variables('masterOffset')),'-osdisk.vhd')]"),
 		}

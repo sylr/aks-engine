@@ -177,7 +177,7 @@ func Get() (*List, error) {
 	util.PrintCommand(cmd)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Printf("Error trying to run 'kubectl get nodes':%s", string(out))
+		log.Printf("Error trying to run 'kubectl get nodes':%s", err)
 		return nil, err
 	}
 	nl := List{}
@@ -212,12 +212,14 @@ func Version() (string, error) {
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Printf("Error trying to run 'kubectl version':%s", string(out))
+		log.Printf("Error:%s", err)
 		return "", err
 	}
 	split := strings.Split(string(out), "\n")
 	exp, err := regexp.Compile(ServerVersion)
 	if err != nil {
 		log.Printf("Error while compiling regexp:%s", ServerVersion)
+		log.Printf("Error:%s", err)
 	}
 	s := exp.FindStringSubmatch(split[1])
 	return s[2], nil

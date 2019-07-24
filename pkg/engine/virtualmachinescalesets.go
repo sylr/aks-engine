@@ -174,7 +174,7 @@ func CreateMasterVMSS(cs *api.ContainerService) VirtualMachineScaleSetARM {
 
 	osProfile := compute.VirtualMachineScaleSetOSProfile{
 		AdminUsername:      to.StringPtr("[parameters('linuxAdminUsername')]"),
-		ComputerNamePrefix: to.StringPtr("[concat(variables('masterVMNamePrefix'), 'vmss')]"),
+		ComputerNamePrefix: to.StringPtr("[concat(variables('masterVMNamePrefix'), 'vmss-')]"),
 		LinuxConfiguration: &compute.LinuxConfiguration{
 			DisablePasswordAuthentication: to.BoolPtr(true),
 		},
@@ -518,7 +518,7 @@ func CreateAgentVMSS(cs *api.ContainerService, profile *api.AgentPoolProfile) Vi
 		windowsOsProfile := compute.VirtualMachineScaleSetOSProfile{
 			AdminUsername:      to.StringPtr("[parameters('windowsAdminUsername')]"),
 			AdminPassword:      to.StringPtr("[parameters('windowsAdminPassword')]"),
-			ComputerNamePrefix: to.StringPtr(fmt.Sprintf("[variables('%sVMNamePrefix')]", profile.Name)),
+			ComputerNamePrefix: to.StringPtr(fmt.Sprintf("[concat(variables('%sVMNamePrefix'), '-')]", profile.Name)),
 			WindowsConfiguration: &compute.WindowsConfiguration{
 				EnableAutomaticUpdates: to.BoolPtr(cs.Properties.WindowsProfile.GetEnableWindowsUpdate()),
 			},
@@ -529,7 +529,7 @@ func CreateAgentVMSS(cs *api.ContainerService, profile *api.AgentPoolProfile) Vi
 		customDataStr := getCustomDataFromJSON(t.GetKubernetesLinuxNodeCustomDataJSONObject(cs, profile))
 		linuxOsProfile := compute.VirtualMachineScaleSetOSProfile{
 			AdminUsername:      to.StringPtr("[parameters('linuxAdminUsername')]"),
-			ComputerNamePrefix: to.StringPtr(fmt.Sprintf("[variables('%sVMNamePrefix')]", profile.Name)),
+			ComputerNamePrefix: to.StringPtr(fmt.Sprintf("[concat(variables('%sVMNamePrefix'), '-')]", profile.Name)),
 			CustomData:         to.StringPtr(customDataStr),
 			LinuxConfiguration: &compute.LinuxConfiguration{
 				DisablePasswordAuthentication: to.BoolPtr(true),
