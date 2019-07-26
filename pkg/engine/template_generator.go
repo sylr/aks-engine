@@ -634,6 +634,9 @@ func (t *TemplateGenerator) getTemplateFuncMap(cs *api.ContainerService) templat
 		"IsIdentitySystemADFS": func() bool {
 			return cs.Properties.IsAzureStackCloud() && cs.Properties.CustomCloudProfile.IdentitySystem == api.ADFSIdentitySystem
 		},
+		"GzippedBase64Encode": func(s string) string {
+			return getBase64EncodedGzippedCustomScriptFromStr(s)
+		},
 	}
 }
 
