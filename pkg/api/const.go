@@ -419,3 +419,9 @@ const (
 	// AzureStackCloud is a const string reference identifier for Azure Stack cloud
 	AzureStackCloud = "AzureStackCloud"
 )
+
+// BasicLoadBalancerSku is the string const for Azure Basic Load Balancer
+const BasicLoadBalancerSku = "Basic"
+
+// StandardLoadBalancerSku is the string const for Azure Standard Load Balancer
+const StandardLoadBalancerSku = "Standard"

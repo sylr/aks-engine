@@ -230,6 +230,10 @@ func (cs *ContainerService) setOrchestratorDefaults(isUpdate bool) {
 			a.OrchestratorProfile.KubernetesConfig.LoadBalancerSku = DefaultLoadBalancerSku
 		}
 
+		if a.HasAvailabilityZones() {
+			a.OrchestratorProfile.KubernetesConfig.LoadBalancerSku = StandardLoadBalancerSku
+		}
+
 		if common.IsKubernetesVersionGe(a.OrchestratorProfile.OrchestratorVersion, "1.11.0") && a.OrchestratorProfile.KubernetesConfig.LoadBalancerSku == "Standard" && a.OrchestratorProfile.KubernetesConfig.ExcludeMasterFromStandardLB == nil {
 			a.OrchestratorProfile.KubernetesConfig.ExcludeMasterFromStandardLB = to.BoolPtr(DefaultExcludeMasterFromStandardLB)
 		}
@@ -247,6 +251,12 @@ func (cs *ContainerService) setOrchestratorDefaults(isUpdate bool) {
 		}
 		if a.OrchestratorProfile.KubernetesConfig.ProxyMode == "" {
 			a.OrchestratorProfile.KubernetesConfig.ProxyMode = DefaultKubeProxyMode
+		}
+
+		// CloudProviderDisableOutboundSNAT is only valid in the context of Standard LB, statically set to false if not Standard LB
+		if o.KubernetesConfig.LoadBalancerSku != StandardLoadBalancerSku {
+			fmt.Printf("PWET 2 '%s'\n", o.KubernetesConfig.LoadBalancerSku)
+			o.KubernetesConfig.CloudProviderDisableOutboundSNAT = to.BoolPtr(false)
 		}
 
 		// Configure addons

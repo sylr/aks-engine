@@ -115,3 +115,9 @@ const (
 	// AgentPoolProfileRoleInfra is the infra role
 	AgentPoolProfileRoleInfra AgentPoolProfileRole = "infra"
 )
+
+// BasicLoadBalancerSku is the string const for Azure Basic Load Balancer
+const BasicLoadBalancerSku = "Basic"
+
+// StandardLoadBalancerSku is the string const for Azure Standard Load Balancer
+const StandardLoadBalancerSku = "Standard"

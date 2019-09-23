@@ -309,14 +309,15 @@ type PrivateJumpboxProfile struct {
 
 // CloudProviderConfig contains the KubernetesConfig properties specific to the Cloud Provider
 type CloudProviderConfig struct {
-	CloudProviderBackoff         *bool  `json:"cloudProviderBackoff,omitempty"`
-	CloudProviderBackoffRetries  int    `json:"cloudProviderBackoffRetries,omitempty"`
-	CloudProviderBackoffJitter   string `json:"cloudProviderBackoffJitter,omitempty"`
-	CloudProviderBackoffDuration int    `json:"cloudProviderBackoffDuration,omitempty"`
-	CloudProviderBackoffExponent string `json:"cloudProviderBackoffExponent,omitempty"`
-	CloudProviderRateLimit       *bool  `json:"cloudProviderRateLimit,omitempty"`
-	CloudProviderRateLimitQPS    string `json:"cloudProviderRateLimitQPS,omitempty"`
-	CloudProviderRateLimitBucket int    `json:"cloudProviderRateLimitBucket,omitempty"`
+	CloudProviderBackoff             *bool  `json:"cloudProviderBackoff,omitempty"`
+	CloudProviderBackoffRetries      int    `json:"cloudProviderBackoffRetries,omitempty"`
+	CloudProviderBackoffJitter       string `json:"cloudProviderBackoffJitter,omitempty"`
+	CloudProviderBackoffDuration     int    `json:"cloudProviderBackoffDuration,omitempty"`
+	CloudProviderBackoffExponent     string `json:"cloudProviderBackoffExponent,omitempty"`
+	CloudProviderRateLimit           *bool  `json:"cloudProviderRateLimit,omitempty"`
+	CloudProviderRateLimitQPS        string `json:"cloudProviderRateLimitQPS,omitempty"`
+	CloudProviderRateLimitBucket     int    `json:"cloudProviderRateLimitBucket,omitempty"`
+	CloudProviderDisableOutboundSNAT *bool   `json:"cloudProviderDisableOutboundSNAT,omitempty"`
 }
 
 // KubernetesConfigDeprecated are properties that are no longer operable and will be ignored
@@ -392,6 +393,7 @@ type KubernetesConfig struct {
 	CloudProviderRateLimit           *bool             `json:"cloudProviderRateLimit,omitempty"`
 	CloudProviderRateLimitQPS        float64           `json:"cloudProviderRateLimitQPS,omitempty"`
 	CloudProviderRateLimitBucket     int               `json:"cloudProviderRateLimitBucket,omitempty"`
+	CloudProviderDisableOutboundSNAT *bool              `json:"cloudProviderDisableOutboundSNAT,omitempty"`
 	NonMasqueradeCidr                string            `json:"nonMasqueradeCidr,omitempty"`
 	NodeStatusUpdateFrequency        string            `json:"nodeStatusUpdateFrequency,omitempty"`
 	HardEvictionThreshold            string            `json:"hardEvictionThreshold,omitempty"`

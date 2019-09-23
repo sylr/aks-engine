@@ -295,7 +295,8 @@
         "cloudProviderBackoffExponent": "0",
         "cloudProviderRateLimit": false,
         "cloudProviderRateLimitQPS": "0",
-        "cloudProviderRateLimitBucket": 0
+        "cloudProviderRateLimitBucket": 0,
+        "cloudProviderDisableOutboundSNAT": false
       }
     },
 {{if IsKubernetesVersionGe "1.12.0"}}
