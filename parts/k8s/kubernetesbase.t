@@ -10,6 +10,12 @@
     {{template "k8s/kubernetesparams.t" .}}
   },
   "variables": {
+    "agentLbBackendPoolName": "[parameters('masterEndpointDNSNamePrefix')]",
+    "agentLbID": "[resourceId('Microsoft.Network/loadBalancers',variables('agentLbName'))]",
+    "agentLbIPConfigID": "[concat(variables('agentLbID'),'/frontendIPConfigurations/', variables('agentLbIPConfigName'))]",
+    "agentLbIPConfigName": "[concat('{{GetClusterName}}', '-agent-outbound')]",
+    "agentLbName": "[parameters('masterEndpointDNSNamePrefix')]",
+    "agentPublicIPAddressName": "[concat('{{GetClusterName}}', '-agent-outbound-ip')]",
     {{range $index, $agent := .AgentPoolProfiles}}
         "{{.Name}}Index": {{$index}},
         {{template "k8s/kubernetesagentvars.t" .}}

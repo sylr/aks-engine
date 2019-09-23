@@ -82,6 +82,11 @@
                     "name": "ipconfig{{$seq}}",
                     "properties": {
                       {{if eq $seq 1}}
+                      "loadBalancerBackendAddressPools": [
+                        {
+                          "id": "[concat(variables('agentLbID'), '/backendAddressPools/', variables('agentLbBackendPoolName'))]"
+                        }
+                      ],
                       "primary": true,
                       {{end}}
                       "subnet": {
