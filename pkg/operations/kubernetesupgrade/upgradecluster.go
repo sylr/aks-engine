@@ -116,7 +116,14 @@ func (uc *UpgradeCluster) getClusterNodeStatus(az armhelpers.AKSEngineClient, re
 			return err
 		}
 		for _, vmScaleSet := range vmScaleSetPage.Values() {
-			uc.Logger.Infof("VMSS: %v", *vmScaleSet.Name)
+			vmScaleSetVersion := uc.getNodeVersion(kubeClient, *vmScaleSet.Name, vmScaleSet.Tags)
+
+			if vmScaleSetVersion == goalVersion {
+				uc.Logger.Infof("VMSS: %v skipped because version is already the latest", *vmScaleSet.Name)
+				continue
+			} else {
+				uc.Logger.Infof("VMSS: %v", *vmScaleSet.Name)
+			}
 
 			scaleSetToUpgrade := AgentPoolScaleSet{
 				Name:     *vmScaleSet.Name,
