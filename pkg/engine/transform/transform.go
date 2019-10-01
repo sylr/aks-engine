@@ -40,6 +40,7 @@ const (
 	vmExtensionType  = "Microsoft.Compute/virtualMachines/extensions"
 	nicResourceType  = "Microsoft.Network/networkInterfaces"
 	vnetResourceType = "Microsoft.Network/virtualNetworks"
+	loadBalancerType = "Microsoft.Network/loadBalancers"
 
 	// resource ids
 	nsgID  = "nsgID"
@@ -119,10 +120,9 @@ func (t *Transformer) NormalizeForK8sVMASScalingUp(logger *logrus.Entry, templat
 		}
 
 		resourceType, ok := resourceMap[typeFieldName].(string)
-		resourceName := resourceMap[nameFieldName].(string)
+		//resourceName := resourceMap[nameFieldName].(string)
 
-		if ok && resourceType == nsgResourceType && !strings.Contains(resourceName, "variables('jumpboxNetworkSecurityGroupName')") {
-
+		if ok && resourceType == nsgResourceType {
 			if nsgIndex != -1 {
 				err := t.Translator.Errorf("Found 2 resources with type %s in the template. There should only be 1", nsgResourceType)
 				logger.Errorf(err.Error())
@@ -169,10 +169,8 @@ func (t *Transformer) NormalizeForK8sVMASScalingUp(logger *logrus.Entry, templat
 	}
 
 	indexesToRemove := []int{}
-	if nsgIndex == -1 {
-		err := t.Translator.Errorf("Found no resources with type %s in the template. There should have been 1", nsgResourceType)
-		logger.Errorf(err.Error())
-		return err
+	if nsgIndex != -1 {
+		indexesToRemove = append(indexesToRemove, nsgIndex)
 	}
 
 	if rtIndex == -1 {
@@ -320,11 +318,21 @@ func (t *Transformer) NormalizeResourcesForK8sMasterUpgrade(logger *logrus.Entry
 			continue
 		}
 
-		if !(resourceType == vmResourceType || resourceType == vmExtensionType || resourceType == nicResourceType) {
+		switch resourceType {
+		case vmResourceType:
+		case vmExtensionType:
+		case nicResourceType:
+		case loadBalancerType:
+		case vmssResourceType:
+			// Do not include VMSS
+			filteredResources = filteredResources[:len(filteredResources)-1]
+			continue
+		default:
 			continue
 		}
 
 		resourceName, ok := resourceMap[nameFieldName].(string)
+
 		if !ok {
 			logger.Warnf("Template improperly formatted for field name: %s", nameFieldName)
 			continue
