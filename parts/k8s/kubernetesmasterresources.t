@@ -267,6 +267,26 @@
                 "id": "[concat(variables('masterLbID'),'/probes/APIServerProbe')]"
               }
             }
+         },
+         {
+            "name": "udp",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('masterLbIPConfigID')]"
+              },
+              "backendAddressPool": {
+                "id": "[concat(variables('masterLbID'), '/backendAddressPools/', variables('masterLbBackendPoolName'))]"
+              },
+              "protocol": "Udp",
+              "frontendPort": 123,
+              "backendPort": 123,
+              "enableFloatingIP": false,
+              "idleTimeoutInMinutes": 5,
+              "loadDistribution": "Default",
+              "probe": {
+                "id": "[concat(variables('masterLbID'),'/probes/APIServerProbe')]"
+              }
+            }
           }
         ],
         "probes": [
