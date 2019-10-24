@@ -323,6 +323,10 @@ func (t *Transformer) NormalizeResourcesForK8sMasterUpgrade(logger *logrus.Entry
 		case vmExtensionType:
 		case nicResourceType:
 		case loadBalancerType:
+		case nsgResourceType:
+			// Do not include NSG
+			filteredResources = filteredResources[:len(filteredResources)-1]
+			continue
 		case vmssResourceType:
 			// Do not include VMSS
 			filteredResources = filteredResources[:len(filteredResources)-1]
@@ -338,6 +342,28 @@ func (t *Transformer) NormalizeResourcesForK8sMasterUpgrade(logger *logrus.Entry
 			continue
 		}
 
+		// Remove unwanted dependencies in the template
+		dependencies, ok := resourceMap[dependsOnFieldName].([]interface{})
+		if !ok {
+			continue
+		}
+
+		depIndexesToRemove := []int{}
+		for dIndex := len(dependencies) - 1; dIndex >= 0; dIndex-- {
+			dependency := dependencies[dIndex].(string)
+
+			// Remove dependecies on nsgID
+			if strings.Contains(dependency, nsgID) {
+				depIndexesToRemove = append(depIndexesToRemove, dIndex)
+			}
+		}
+
+		if len(depIndexesToRemove) > 0 {
+			dependencies = removeIndexesFromArray(dependencies, depIndexesToRemove)
+			resourceMap[dependsOnFieldName] = dependencies
+		}
+
+		// NIC
 		if resourceType == nicResourceType {
 			if strings.Contains(resourceName, "variables('masterVMNamePrefix')") {
 				continue
@@ -353,6 +379,7 @@ func (t *Transformer) NormalizeResourcesForK8sMasterUpgrade(logger *logrus.Entry
 			}
 		}
 
+		// VM
 		if strings.EqualFold(resourceType, vmResourceType) &&
 			strings.Contains(resourceName, "variables('masterVMNamePrefix')") {
 			resourceProperties, ok := resourceMap[propertiesFieldName].(map[string]interface{})
