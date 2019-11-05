@@ -36,7 +36,6 @@ func (cs *ContainerService) setAPIServerConfig() {
 		"--service-cluster-ip-range":    o.KubernetesConfig.ServiceCIDR,
 		"--storage-backend":             o.GetAPIServerEtcdAPIVersion(),
 		"--enable-bootstrap-token-auth": "true",
-		"--v":                           "4",
 	}
 	// if using local etcd server then we need the ca file
 	/*this ugly if statement is made this way, because this function is used in a test that does not pass correct data structure */
@@ -50,6 +49,7 @@ func (cs *ContainerService) setAPIServerConfig() {
 		"--audit-log-maxbackup": "10",
 		"--audit-log-maxsize":   "100",
 		"--profiling":           DefaultKubernetesAPIServerEnableProfiling,
+		"--v":                   "4",
 	}
 
 	// Data Encryption at REST configuration conditions
