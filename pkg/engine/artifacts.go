@@ -199,12 +199,6 @@ func kubernetesAddonSettingsInit(profile *api.Properties) []kubernetesFeatureSet
 			profile.OrchestratorProfile.KubernetesConfig.LoadBalancerSku == "Standard",
 			profile.OrchestratorProfile.KubernetesConfig.GetAddonScript(DefaultELBSVCAddonName),
 		},
-		{
-			"kubernetesmaster-audit-policy.yaml",
-			"audit-policy.yaml",
-			common.IsKubernetesVersionGe(profile.OrchestratorProfile.OrchestratorVersion, "1.8.0"),
-			"",
-		},
 	}
 }
 
