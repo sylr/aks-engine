@@ -4,6 +4,7 @@
 package transform
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"sort"
@@ -33,14 +34,15 @@ const (
 	managedDiskFieldName           = "managedDisk"
 
 	// ARM resource Types
-	nsgResourceType  = "Microsoft.Network/networkSecurityGroups"
-	rtResourceType   = "Microsoft.Network/routeTables"
-	vmResourceType   = "Microsoft.Compute/virtualMachines"
-	vmssResourceType = "Microsoft.Compute/virtualMachineScaleSets"
-	vmExtensionType  = "Microsoft.Compute/virtualMachines/extensions"
-	nicResourceType  = "Microsoft.Network/networkInterfaces"
-	vnetResourceType = "Microsoft.Network/virtualNetworks"
-	loadBalancerType = "Microsoft.Network/loadBalancers"
+	nsgResourceType     = "Microsoft.Network/networkSecurityGroups"
+	rtResourceType      = "Microsoft.Network/routeTables"
+	vmResourceType      = "Microsoft.Compute/virtualMachines"
+	vmssResourceType    = "Microsoft.Compute/virtualMachineScaleSets"
+	vmExtensionType     = "Microsoft.Compute/virtualMachines/extensions"
+	nicResourceType     = "Microsoft.Network/networkInterfaces"
+	vnetResourceType    = "Microsoft.Network/virtualNetworks"
+	loadBalancerType    = "Microsoft.Network/loadBalancers"
+	publicIpAddressType = "Microsoft.Network/publicIPAddresses"
 
 	// resource ids
 	nsgID  = "nsgID"
@@ -100,6 +102,76 @@ func (t *Transformer) NormalizeForVMSSScaling(logger *logrus.Entry, templateMap 
 			continue
 		}
 	}
+	return nil
+}
+
+// NormalizeForVMSSUpgrade takes a template and removes elements that are unwanted in a VMSS upgrade
+func (t *Transformer) NormalizeForVMSSUpgrade(logger *logrus.Entry, templateMap map[string]interface{}) error {
+	if err := t.NormalizeMasterResourcesForScaling(logger, templateMap); err != nil {
+		return err
+	}
+
+	resources := templateMap[resourcesFieldName].([]interface{})
+	indexesToRemove := []int{}
+
+	for i, resource := range resources {
+		resourceMap, ok := resource.(map[string]interface{})
+		if !ok {
+			logger.Warnf("Template improperly formatted")
+			continue
+		}
+
+		resourceType, ok := resourceMap[typeFieldName].(string)
+		if !ok {
+			continue
+		}
+
+		switch resourceType {
+		// Keep Public addresses
+		case publicIpAddressType:
+		// Keep VMSS
+		case vmssResourceType:
+			// Remove unwanted dependencies
+			dependencies, ok := resourceMap[dependsOnFieldName].([]interface{})
+			if ok {
+				depIndexesToRemove := []int{}
+				for dIndex := len(dependencies) - 1; dIndex >= 0; dIndex-- {
+					dependency, ok := dependencies[dIndex].(string)
+					if ok {
+						// Remove dependencies on nsgID
+						if strings.Contains(dependency, nsgID) {
+							depIndexesToRemove = append(depIndexesToRemove, dIndex)
+						}
+					}
+				}
+
+				if len(depIndexesToRemove) > 0 {
+					dependencies = removeIndexesFromArray(dependencies, depIndexesToRemove)
+					resourceMap[dependsOnFieldName] = dependencies
+				}
+			}
+
+			// Remove capacity property so that we do not create or remove
+			// VMSS instances when applying the template.
+			sku, ok := resourceMap["sku"].(map[string]interface{})
+			if ok {
+				_, ok := sku["capacity"].(string)
+				if ok {
+					delete(sku, "capacity")
+				}
+			}
+
+		default:
+			// Remove all other resources
+			indexesToRemove = append(indexesToRemove, i)
+		}
+	}
+
+	templateMap[resourcesFieldName] = removeIndexesFromArray(resources, indexesToRemove)
+
+	pwet, _ := json.MarshalIndent(templateMap, "", "  ")
+	fmt.Print(string(pwet))
+
 	return nil
 }
 

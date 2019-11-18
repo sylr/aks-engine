@@ -404,7 +404,7 @@ func (ku *Upgrader) upgradeAgentScaleSets(ctx context.Context) error {
 			Translator: ku.Translator,
 		}
 
-		if err := transformer.NormalizeForVMSSScaling(ku.logger, templateMap); err != nil {
+		if err := transformer.NormalizeForVMSSUpgrade(ku.logger, templateMap); err != nil {
 			ku.logger.Errorf("unable to update template, error: %v.", err)
 			return err
 		}
