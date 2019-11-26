@@ -390,11 +390,7 @@ func (ku *Upgrader) upgradeAgentPools(ctx context.Context) error {
 }
 
 func (ku *Upgrader) upgradeAgentScaleSets(ctx context.Context) error {
-	expectedAgentScaleSetsCount := len(ku.ClusterTopology.DataModel.Properties.AgentPoolProfiles)
-	upgradedAgentPoolScaleSetsToUpgradeCount := len(ku.ClusterTopology.AgentPoolScaleSetsToUpgrade)
-	missingAgentPoolScaleSetsCount := expectedAgentScaleSetsCount - upgradedAgentPoolScaleSetsToUpgradeCount
-
-	if len(ku.ClusterTopology.AgentPoolScaleSetsToUpgrade) > 0 || missingAgentPoolScaleSetsCount > 0 {
+	if len(ku.ClusterTopology.AgentPoolScaleSetsToUpgrade) > 0 {
 		// need to apply the ARM template with target Kubernetes version to the VMSS first in order that the new VMSS instances
 		// created can get the expected Kubernetes version. Otherwise the new instances created still have old Kubernetes version
 		// if the topology doesn't have master nodes (so there are no ARM deployments in previous upgradeMasterNodes step)
@@ -408,11 +404,9 @@ func (ku *Upgrader) upgradeAgentScaleSets(ctx context.Context) error {
 			Translator: ku.Translator,
 		}
 
-		if missingAgentPoolScaleSetsCount == 0 {
-			if err := transformer.NormalizeForVMSSUpgrade(ku.logger, templateMap); err != nil {
-				ku.logger.Errorf("unable to update template, error: %v.", err)
-				return err
-			}
+		if err := transformer.NormalizeForVMSSUpgrade(ku.logger, templateMap); err != nil {
+			ku.logger.Errorf("unable to update template, error: %v.", err)
+			return err
 		}
 
 		random := rand.New(rand.NewSource(time.Now().UnixNano()))
