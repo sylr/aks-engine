@@ -151,15 +151,17 @@ func (t *Transformer) NormalizeForVMSSUpgrade(logger *logrus.Entry, templateMap 
 				}
 			}
 
-			// Remove capacity property so that we do not create or remove
-			// VMSS instances when applying the template.
-			sku, ok := resourceMap["sku"].(map[string]interface{})
-			if ok {
-				_, ok := sku["capacity"].(string)
-				if ok {
-					delete(sku, "capacity")
-				}
-			}
+			// The following does not work :(
+			//
+			// // Remove capacity property so that we do not create or remove
+			// // VMSS instances when applying the template.
+			// sku, ok := resourceMap["sku"].(map[string]interface{})
+			// if ok {
+			// 	_, ok := sku["capacity"].(string)
+			// 	if ok {
+			// 		delete(sku, "capacity")
+			// 	}
+			// }
 
 		default:
 			// Remove all other resources
