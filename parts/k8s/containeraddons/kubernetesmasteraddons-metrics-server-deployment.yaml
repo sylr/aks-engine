@@ -126,7 +126,6 @@ spec:
         imagePullPolicy: IfNotPresent
         command:
         - /metrics-server
-        - --source=kubernetes.summary_api:''
       nodeSelector:
         beta.kubernetes.io/os: linux
 ---
