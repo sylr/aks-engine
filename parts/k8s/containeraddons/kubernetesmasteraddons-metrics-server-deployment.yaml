@@ -20,6 +20,8 @@ rules:
   resources:
   - pods
   - nodes
+  - nodes/stats
+  - nodes/metrics
   - namespaces
   verbs:
   - get
@@ -126,6 +128,8 @@ spec:
         imagePullPolicy: IfNotPresent
         command:
         - /metrics-server
+        - --metric-resolution=30s
+        - --kubelet-insecure-tls
       nodeSelector:
         beta.kubernetes.io/os: linux
 ---

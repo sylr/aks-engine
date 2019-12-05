@@ -136,6 +136,11 @@ configureK8s() {
     chmod 0600 "${AZURE_JSON_PATH}"
     chown root:root "${AZURE_JSON_PATH}"
 
+    KUBELET_CONFIG_PATH="/etc/kubernetes/kubelet-config.yaml"
+    touch "${KUBELET_CONFIG_PATH}"
+    chmod 0600 "${KUBELET_CONFIG_PATH}"
+    chown root:root "${KUBELET_CONFIG_PATH}"
+
     set +x
     echo "${KUBELET_PRIVATE_KEY}" | base64 --decode > "${KUBELET_PRIVATE_KEY_PATH}"
     echo "${APISERVER_PUBLIC_KEY}" | base64 --decode > "${APISERVER_PUBLIC_KEY_PATH}"
@@ -178,6 +183,18 @@ configureK8s() {
     "providerKeyName": "k8s",
     "providerKeyVersion": ""
 }
+EOF
+    cat << EOF > "${KUBELET_CONFIG_PATH}"
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    cacheTTL: 2m0s
+    enabled: true
+  x509:
+    clientCAFile: /etc/kubernetes/certs/ca.crt
+kind: KubeletConfiguration
 EOF
     set -x
     if [[ ! -z "${MASTER_NODE}" ]]; then
