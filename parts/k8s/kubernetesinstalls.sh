@@ -46,6 +46,10 @@ installTools() {
     apt_get_install 30 1 600 htop iotop iftop sysstat jq || exit $ERR_APT_INSTALL_TIMEOUT
 }
 
+removeMlocate() {
+    apt_get_remove 30 1 600 mlocate || exit $ERR_APT_INSTALL_TIMEOUT
+}
+
 installGPUDrivers() {
     rmmod nouveau
     echo blacklist nouveau >> /etc/modprobe.d/blacklist.conf

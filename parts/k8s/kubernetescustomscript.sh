@@ -63,6 +63,7 @@ else
 fi
 
 installTools
+removeMlocate
 installContainerRuntime
 installNetworkPlugin
 if [[ "$CONTAINER_RUNTIME" == "clear-containers" ]] || [[ "$CONTAINER_RUNTIME" == "kata-containers" ]] || [[ "$CONTAINER_RUNTIME" == "containerd" ]]; then
