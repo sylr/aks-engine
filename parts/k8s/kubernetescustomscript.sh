@@ -84,6 +84,8 @@ if [[ "${SGX_NODE}" = true ]]; then
     fi
 fi
 
+configureAdminUser
+
 # create etcd user if we are configured for etcd
 if [[ ! -z "${MASTER_NODE}" ]] && [[ -z "${COSMOS_URI}" ]]; then
   configureEtcdUser
