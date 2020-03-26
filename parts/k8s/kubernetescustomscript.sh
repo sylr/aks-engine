@@ -58,7 +58,7 @@ aptUpgrade
 
 if $FULL_INSTALL_REQUIRED; then
     installDeps
-else 
+else
     echo "Golden image; skipping dependencies installation"
 fi
 
@@ -88,10 +88,10 @@ if [[ ! -z "${MASTER_NODE}" ]] && [[ -z "${COSMOS_URI}" ]]; then
   configureEtcdUser
 fi
 
-if [[ ! -z "${MASTER_NODE}" ]]; then 
+if [[ ! -z "${MASTER_NODE}" ]]; then
   # this step configures all certs
   # both configs etcd/cosmos
-  configureSecrets 
+  configureSecrets
 fi
 # configure etcd if we are configured for etcd
 if [[ ! -z "${MASTER_NODE}" ]] && [[ -z "${COSMOS_URI}" ]]; then
