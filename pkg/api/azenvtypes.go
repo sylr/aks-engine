@@ -141,9 +141,9 @@ var (
 	// DefaultAKSOSImageConfig is the AKS image based on Ubuntu 16.04.
 	DefaultAKSOSImageConfig = AzureOSImageConfig{
 		ImageOffer:     "aks",
-		ImageSku:       "aks-ubuntu-1604-202003",
+		ImageSku:       "aks-ubuntu-1604-202006",
 		ImagePublisher: "microsoft-aks",
-		ImageVersion:   "2020.03.11",
+		ImageVersion:   "2020.06.30",
 	}
 
 	// DefaultAKSDockerEngineOSImageConfig is the AKS image based on Ubuntu 16.04.
